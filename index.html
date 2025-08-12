@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Kanwal</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #fce3ec, #d8e9f0);
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #444;
+        text-align: center;
+        position: relative;
+    }
+
+    #countdown-container {
+        z-index: 2;
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+
+    #countdown {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    #birthday-content {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+        animation: fadeIn 1.5s ease-in-out forwards;
+    }
+
+    #birthday-content img {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+        border: 5px solid white;
+    }
+
+    .wish {
+        font-size: 1.3em;
+        max-width: 500px;
+        line-height: 1.6;
+    }
+
+    /* Floating sparkles */
+    .sparkle {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: float 10s infinite ease-in-out;
+        pointer-events: none;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0) scale(1); opacity: 0.8; }
+        50% { transform: translateY(-50px) scale(1.2); opacity: 0.5; }
+        100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+<body>
+
+<div id="countdown-container">
+    <h1>Something special is coming... 🎉</h1>
+    <div id="countdown"></div>
+</div>
+
+<div id="birthday-content">
+    <img src="kanwal.jpg" alt="Kanwal">
+    <div class="wish">
+        <p>Happy Birthday, Kanwal! 🎂💖</p>
+        <p>You are one of the most beautiful souls I’ve ever known — cheerful, inspiring, and full of life.  
+        May your year be as lovely as your smile and as bright as your heart.  
+        Thank you for being you — truly wonderful and endlessly amazing. 🌸✨</p>
+    </div>
+</div>
+
+<!-- Birthday chime audio -->
+<audio id="birthday-chime" src="birthday-chime.mp3" preload="auto"></audio>
+
+<script>
+    // Sparkle generator
+    function createSparkles() {
+        for (let i = 0; i < 40; i++) {
+            let sparkle = document.createElement("div");
+            sparkle.classList.add("sparkle");
+            let size = Math.random() * 4 + 2 + "px";
+            sparkle.style.width = size;
+            sparkle.style.height = size;
+            sparkle.style.left = Math.random() * window.innerWidth + "px";
+            sparkle.style.top = Math.random() * window.innerHeight + "px";
+            sparkle.style.animationDuration = (Math.random() * 5 + 5) + "s";
+            document.body.appendChild(sparkle);
+        }
+    }
+    createSparkles();
+
+    const countdownEl = document.getElementById("countdown");
+    const countdownContainer = document.getElementById("countdown-container");
+    const birthdayContent = document.getElementById("birthday-content");
+    const chime = document.getElementById("birthday-chime");
+
+    function updateCountdown() {
+        const now = new Date();
+        // Convert to IST (UTC+5:30)
+        const nowIST = new Date(now.getTime() + (330 - now.getTimezoneOffset()) * 60000);
+        const targetDate = new Date(nowIST.getFullYear(), 7, 13, 0, 0, 0); // August (7) is 0-based index
+
+        if (nowIST >= targetDate) {
+            countdownEl.innerHTML = "It's time! Click anywhere 🎉";
+            document.body.onclick = () => {
+                countdownContainer.style.display = "none";
+                birthdayContent.style.display = "flex";
+                chime.play().catch(err => console.log("Audio play blocked:", err));
+            }
+        } else {
+            const diff = targetDate - nowIST;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diff / (1000 * 60)) % 60);
+            const secs = Math.floor((diff / 1000) % 60);
+            countdownEl.innerHTML = `${days}d ${hours}h ${mins}m ${secs}s`;
+        }
+    }
+
+    setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
