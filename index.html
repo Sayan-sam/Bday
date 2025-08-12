@@ -8,13 +8,13 @@
     body {
         margin: 0;
         font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #fce3ec, #d8e9f0);
+        background: linear-gradient(135deg, #f8b5c2, #a6c8e0); /* deeper pastel pink & blue */
         height: 100vh;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #444;
+        color: #333;
         text-align: center;
         position: relative;
     }
@@ -96,11 +96,9 @@
     </div>
 </div>
 
-<!-- Birthday chime audio -->
 <audio id="birthday-chime" src="birthday-chime.mp3" preload="auto"></audio>
 
 <script>
-    // Sparkle generator
     function createSparkles() {
         for (let i = 0; i < 40; i++) {
             let sparkle = document.createElement("div");
@@ -122,12 +120,14 @@
     const chime = document.getElementById("birthday-chime");
 
     function updateCountdown() {
-        const now = new Date();
-        // Convert to IST (UTC+5:30)
-        const nowIST = new Date(now.getTime() + (330 - now.getTimezoneOffset()) * 60000);
-        const targetDate = new Date(nowIST.getFullYear(), 7, 13, 0, 0, 0); // August (7) is 0-based index
+        const nowUTC = new Date().getTime();
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000; // ms offset from UTC
+        const nowIST = new Date(nowUTC + IST_OFFSET);
 
-        if (nowIST >= targetDate) {
+        const targetDateIST = new Date(Date.UTC(nowIST.getFullYear(), 7, 13, 0, 0, 0)); // Aug 13 midnight IST
+        const targetDateUTC = targetDateIST.getTime() - IST_OFFSET; // convert back to UTC for comparison
+
+        if (nowUTC >= targetDateUTC) {
             countdownEl.innerHTML = "It's time! Click anywhere 🎉";
             document.body.onclick = () => {
                 countdownContainer.style.display = "none";
@@ -135,7 +135,7 @@
                 chime.play().catch(err => console.log("Audio play blocked:", err));
             }
         } else {
-            const diff = targetDate - nowIST;
+            const diff = targetDateUTC - nowUTC;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const mins = Math.floor((diff / (1000 * 60)) % 60);
