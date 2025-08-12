@@ -127,7 +127,7 @@
         const targetDateIST = new Date(Date.UTC(nowIST.getFullYear(), 7, 13, 0, 0, 0)); // Aug 13 midnight IST
         const targetDateUTC = targetDateIST.getTime() - IST_OFFSET; // convert back to UTC for comparison
 
-        if (nowUTC >= targetDateUTC) {
+        if (nowUTC <= targetDateUTC) {
             countdownEl.innerHTML = "It's time! Click anywhere 🎉";
             document.body.onclick = () => {
                 countdownContainer.style.display = "none";
